@@ -1,0 +1,14 @@
+{
+  "name": "my-shopify-app",
+  "version": "1.0.0",
+  "private": true,
+  "author": "hey@gabsieabra.dev",
+  "license": "ISC",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build -ws"
+  }
+}
