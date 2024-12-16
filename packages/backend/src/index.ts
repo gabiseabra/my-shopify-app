@@ -1,29 +1,29 @@
 import express from 'express';
 import { createHandler } from 'graphql-http/lib/use/express';
-import { buildSchema } from 'graphql';
- 
-// Construct a schema, using GraphQL schema language
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`)
- 
-// The root provides a resolver function for each API endpoint
-const root = {
-  hello() {
-    return "Hello world!"
-  },
-}
- 
+import { Context } from './utils/types';
+import { ruruHTML } from 'ruru/server';
+import Query from './graphql/Query';
+import Mutation from './graphql/Mutation';
+import schema from './graphql/schema';
+
 const app = express()
+
+// GraphQL Playground
+app.get("/", (_req, res) => {
+  res.type("html")
+  res.end(ruruHTML({ endpoint: "/graphql" }))
+})
  
 // Create and use the GraphQL handler.
 app.all(
   "/graphql",
   createHandler({
-    schema: schema,
-    rootValue: root,
+    schema,
+    rootValue: {
+      ...Query,
+      ...Mutation,
+    },
+    context: (): Context => ({})
   })
 )
 
@@ -38,6 +38,7 @@ const shutdown = () => {
   })
 }
 
+process.on('exit', shutdown);
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
