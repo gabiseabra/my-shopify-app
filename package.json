@@ -8,10 +8,12 @@
     "packages/*"
   ],
   "scripts": {
+    "start": "npm run start -w packages/backend",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build -ws"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^1.31.0",
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2"
   }

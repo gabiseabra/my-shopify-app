@@ -3,6 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "dotenvx run -f ../../.env -- node build/src/index.js",
     "build": "tsc -b"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "graphql": "^16.10.0",
+    "graphql-http": "^1.22.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
   }
 }
