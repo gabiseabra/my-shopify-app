@@ -2,6 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "node-env"],
-    "outDir": "./build"
+    "outDir": "./build",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
   },
 }

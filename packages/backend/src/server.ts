@@ -1,19 +1,14 @@
+import fs from 'fs';
 import express from 'express';
 import { createHandler } from 'graphql-http/lib/use/express';
-import { Context } from './utils/types';
-import { ruruHTML } from 'ruru/server';
 import Query from './graphql/Query';
 import Mutation from './graphql/Mutation';
-import schema from './graphql/schema';
+import { buildSchema } from 'graphql';
 
 const app = express()
 
-// GraphQL Playground
-app.get("/", (_req, res) => {
-  res.type("html")
-  res.end(ruruHTML({ endpoint: "/graphql" }))
-})
- 
+const schema = buildSchema(fs.readFileSync('src/graphql/schema.gql', 'utf8'))
+
 // Create and use the GraphQL handler.
 app.all(
   "/graphql",
@@ -23,7 +18,6 @@ app.all(
       ...Query,
       ...Mutation,
     },
-    context: (): Context => ({})
   })
 )
 

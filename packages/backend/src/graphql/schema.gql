@@ -1,7 +1,3 @@
-import { buildSchema } from "graphql";
-import { gql } from "../utils/graphql-tag";
-
-export default buildSchema(gql`
 type Query {
   """Returns a Product resource by ID."""
   product(
@@ -399,4 +395,3 @@ type PageInfo {
 
 scalar HTML
 scalar URL
-`);

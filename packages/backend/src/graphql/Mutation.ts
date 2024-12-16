@@ -1,20 +1,7 @@
-import { Product } from "shopify-admin-api/dist/types/interfaces"
 import { query } from "../utils/shopify-api"
 import { gql } from "../utils/graphql-tag"
 import { ProductFragment } from "./fragments"
-
-type SEOInput = {
-  title?: string
-  description?: string
-}
-
-type ProductInput = {
-  descriptionHtml?: string
-  handle?: string
-  seo?: SEOInput
-  status: string
-  title: string
-}
+import { Product, ProductInput } from "../types"
 
 const Mutation = {
   async productCreate(input: { product: ProductInput }): Promise<Product> {

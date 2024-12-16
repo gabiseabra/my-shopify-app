@@ -1,7 +1,7 @@
-import type { Product, ProductCollection } from "shopify-admin-api/dist/types/interfaces";
 import { query } from "../utils/shopify-api";
 import { gql } from "../utils/graphql-tag";
 import { PageInfoFragment, ProductFragment } from "./fragments";
+import { Product, ProductConnection } from "../types";
 
 const Query = {
   async product(args: {
@@ -18,8 +18,8 @@ const Query = {
   async products(args: {
     after?: string
     sortKey?: string
-  }): Promise<ProductCollection> {
-    return (await query<{ products: ProductCollection }>(gql`
+  }): Promise<ProductConnection> {
+    return (await query<{ products: ProductConnection }>(gql`
       query products(
         $after: String
         $sortKey: ProductSortKeys = ID
