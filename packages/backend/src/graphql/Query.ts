@@ -1,65 +1,42 @@
-import type { ProductCollection } from "shopify-admin-api/dist/types/interfaces";
+import type { Product, ProductCollection } from "shopify-admin-api/dist/types/interfaces";
 import { query } from "../utils/shopify-api";
 import { gql } from "../utils/graphql-tag";
-
-type ProductsInput = {
-  first?: number;
-  after?: string;
-  last?: number;
-  before?: string;
-}
+import { PageInfoFragment, ProductFragment } from "./fragments";
 
 const Query = {
-  async products(args: ProductsInput): Promise<ProductCollection> {
+  async product(args: {
+    id: string
+  }): Promise<Product> {
+    return (await query<{ product: Product }>(gql`
+      query product($id: ID!) {
+        product(id: $id) { ...ProductFragment }
+      }
+      ${ProductFragment}
+    `, args)).product;
+  },
+
+  async products(args: {
+    after?: string
+    sortKey?: string
+  }): Promise<ProductCollection> {
     return (await query<{ products: ProductCollection }>(gql`
       query products(
-        $first: Int
         $after: String
-        $last: Int
-        $before: String
         $sortKey: ProductSortKeys = ID
       ) {
         products(
-          first: $first
+          first: 5
           after: $after
-          last: $last
-          before: $before
           sortKey: $sortKey
         ) {
           edges {
-            node {
-              defaultCursor
-              descriptionHtml
-              featuredMedia {
-                alt
-                id
-                status
-                mediaContentType
-                preview {
-                  image {
-                    id
-                    url
-                    width
-                    height
-                  }
-                  status
-                }
-              }
-              handle
-              id
-              seo { title, description }
-              status
-              title
-            }
+            node { ...ProductFragment }
           }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
+          pageInfo { ...PageInfoFragment }
         }
       }
+      ${ProductFragment}
+      ${PageInfoFragment}
       `, args)).products;
   },
 }

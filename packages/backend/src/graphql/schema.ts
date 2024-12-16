@@ -3,27 +3,18 @@ import { gql } from "../utils/graphql-tag";
 
 export default buildSchema(gql`
 type Query {
+  """Returns a Product resource by ID."""
+  product(
+    """The ID of the Product to return."""
+    id: ID!
+  ): Product
+
   """Returns a list of products."""
   products(
-    """
-    The first \`n\` elements from the [paginated list](https://shopify.dev/api/usage/pagination-graphql).
-    """
-    first: Int
-
     """
     The elements that come after the specified [cursor](https://shopify.dev/api/usage/pagination-graphql).
     """
     after: String
-
-    """
-    The last \`n\` elements from the [paginated list](https://shopify.dev/api/usage/pagination-graphql).
-    """
-    last: Int
-
-    """
-    The elements that come before the specified [cursor](https://shopify.dev/api/usage/pagination-graphql).
-    """
-    before: String
 
     """
     Sort the underlying list using a key. If your query is slow or returns an
@@ -66,6 +57,7 @@ type Mutation {
   [productVariantUpdate](https://shopify.dev/api/admin-graphql/latest/mutations/productvariantupdate).
   """
   productUpdate(
+    id: ID!
     """The updated properties for a product."""
     product: ProductInput
   ): Product
