@@ -1,5 +1,5 @@
 {
-  "name": "my-shopify-backend",
+  "name": "@my-shopify/backend",
   "version": "1.0.0",
   "private": true,
   "type": "module",

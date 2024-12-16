@@ -1,5 +1,5 @@
 {
-  "name": "mu-shopify-frontend",
+  "name": "@my-shopify/frontend",
   "version": "1.0.0",
   "private": true,
   "type": "module",
