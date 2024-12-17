@@ -3,6 +3,7 @@ import { ProductStatus } from '@my-shopify/backend'
 import type { PageInfo, Product, ProductConnection } from "@my-shopify/backend";
 import { Badge, Button, ButtonGroup, Card, InlineStack, Page, ResourceItem, ResourceList, Text, Thumbnail } from "@shopify/polaris";
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@shopify/polaris-icons";
+import { Link, Outlet } from "react-router";
 import Spinner from "~/components/Spinner";
 
 const PRODUCTS_PER_PAGE = 5;
@@ -37,6 +38,7 @@ const GET_PRODUCTS = gql`
 export default function ListProducts() {
   const { data, fetchMore, loading } = useQuery<{ products: ProductConnection }>(GET_PRODUCTS, {
     variables: { first: PRODUCTS_PER_PAGE },
+    fetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
   });
   const products: Product[] = data?.products.edges.map(({ node }) => node) ?? [];
@@ -75,14 +77,15 @@ export default function ListProducts() {
             renderItem={renderProduct}
           />
           <InlineStack>
-            <Button
-                variant="secondary"
-                url="/products/new"
-                accessibilityLabel="Create new product"
-                icon={PlusIcon}
-              >
-                Create new product
-            </Button>
+            <Link to="/products/new">
+              <Button
+                  variant="secondary"
+                  accessibilityLabel="Create new product"
+                  icon={PlusIcon}
+                >
+                  Create new product
+              </Button>
+            </Link>
 
             <div style={{ flex: 1 }} />
 
@@ -103,6 +106,7 @@ export default function ListProducts() {
           </InlineStack>
         </div>
       </Card>
+      <Outlet />
     </Page>
   )
 }

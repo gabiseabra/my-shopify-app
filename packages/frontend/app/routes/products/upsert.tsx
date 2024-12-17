@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client/index.js";
 import { ProductStatus } from '@my-shopify/backend'
 import type { Product, ProductInput } from "@my-shopify/backend";
-import { Button, ButtonGroup, Card, FormLayout, InlineStack, Page, Select, TextField } from "@shopify/polaris";
+import { Button, ButtonGroup, FormLayout, InlineStack, Modal, Select, TextField } from "@shopify/polaris";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Spinner from "~/components/Spinner";
@@ -74,6 +74,7 @@ export default function UpsertProduct() {
   const product: Product | undefined = data?.product;
   const isDirty = !product || compareProductInput(mkProductInput(product), state);
   const isValid = validateProductInput(state);
+  const initialLoading = handle && !product;
 
   const onSubmit = async () => {
     try {
@@ -95,60 +96,64 @@ export default function UpsertProduct() {
     }
   }
 
-  if (handle && !product) return <Spinner />;
-
   return (
-    <Page title={product ? `Edit Product: ${product.title}` : 'Create Product'}>
-      <Card>
-        <div style={{ position: 'relative', display: 'grid', gap: 'var(--p-space-400)' }}>
-          {loading && <Spinner overlay />}
-          <FormLayout>
-            <TextField
-              autoComplete="off"
-              label="Title"
-              value={state.title ?? ""}
-              onChange={(title) => setState({ ...state, title })}
-            />
-            <TextField
-              autoComplete="off"
-              label="SKU"
-              value={state.sku ?? ""}
-              onChange={(sku) => setState({ ...state, sku })}
-            />
-            <Select
-              label="Status"
-              disabled={!handle}
-              options={[
-                { label: 'Active', value: ProductStatus.Active },
-                { label: 'Draft', value: ProductStatus.Draft },
-                { label: 'Archived', value: ProductStatus.Archived },
-              ]}
-              value={state.status ?? ProductStatus.Draft}
-              onChange={(status) => setState({ ...state, status: status as ProductStatus })}
-            />
-          </FormLayout>
+    <Modal
+      open
+      onClose={() => navigate('/products')}
+      title={(
+        initialLoading ? 'Loading...' :
+        product ? `Edit Product: ${product.title}` :
+        'Create Product'
+      )}
+    >
+      <div style={{ position: 'relative', display: 'grid', gap: 'var(--p-space-400)', padding: 'var(--p-space-400)' }}>
+        {loading || initialLoading && <Spinner overlay />}
+        <FormLayout>
+          <TextField
+            autoComplete="off"
+            label="Title"
+            value={state.title ?? ""}
+            onChange={(title) => setState({ ...state, title })}
+          />
+          <TextField
+            autoComplete="off"
+            label="SKU"
+            value={state.sku ?? ""}
+            onChange={(sku) => setState({ ...state, sku })}
+          />
+          <Select
+            label="Status"
+            disabled={!handle}
+            options={[
+              { label: 'Active', value: ProductStatus.Active },
+              { label: 'Draft', value: ProductStatus.Draft },
+              { label: 'Archived', value: ProductStatus.Archived },
+            ]}
+            value={state.status ?? ProductStatus.Draft}
+            onChange={(status) => setState({ ...state, status: status as ProductStatus })}
+          />
+        </FormLayout>
 
-          <InlineStack align="end">
-            <ButtonGroup>
-              <Button
-                variant="secondary"
-                onClick={() => navigate('/products')}
-                accessibilityLabel="Cancel"
-              >
-                Cancel
-              </Button>
-              <Button
-                disabled={!isDirty || !isValid || loading}
-                variant="primary"
-                onClick={onSubmit}
-                accessibilityLabel="Next page"
-              >
-                {product ? 'Save' : 'Create'}
-              </Button>
-            </ButtonGroup>
-          </InlineStack>
-        </div>
-      </Card>
-    </Page>
+        <InlineStack align="end">
+          <ButtonGroup>
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/products')}
+              accessibilityLabel="Cancel"
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={!isDirty || !isValid || loading}
+              variant="primary"
+              onClick={onSubmit}
+              accessibilityLabel="Next page"
+            >
+              {product ? 'Save' : 'Create'}
+            </Button>
+          </ButtonGroup>
+        </InlineStack>
+      </div>
+    </Modal>
   )
 }
