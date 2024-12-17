@@ -16,6 +16,8 @@ import { AppProvider, Frame } from '@shopify/polaris';
 
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client/index.js';
 
+import useInterceptLinks from "./hooks/useInterceptLinks";
+
 const client = new ApolloClient({
   uri: `//localhost:${import.meta.env.VITE_BE_PORT}/graphql`,
   cache: new InMemoryCache(),
@@ -54,6 +56,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  useInterceptLinks();
+
   return (
     <AppProvider i18n={enTranslations}>
       <ApolloProvider client={client}>
