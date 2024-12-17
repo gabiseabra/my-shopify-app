@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client/index.js";
-import type { PageInfo, Product, ProductConnection } from "@my-shopify/backend";
-import { Badge, Button, ButtonGroup, Card, Page, ResourceItem, ResourceList, Text, Thumbnail } from "@shopify/polaris";
-import { ArrowLeftIcon, ArrowRightIcon } from "@shopify/polaris-icons";
+import { ProductStatus, type PageInfo, type Product, type ProductConnection } from "@my-shopify/backend";
+import { Badge, Button, ButtonGroup, Card, InlineStack, Page, ResourceItem, ResourceList, Text, Thumbnail } from "@shopify/polaris";
+import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@shopify/polaris-icons";
 import Spinner from "~/components/Spinner";
 
 const PRODUCTS_PER_PAGE = 5;
@@ -66,61 +66,76 @@ export default function ListProducts() {
   return (
     <Page title="Product List">
       <Card>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', display: 'grid', gap: 'var(--p-space-400)' }}>
           {loading && <Spinner overlay />}
           <ResourceList<Product>
             resourceName={{ singular: 'product', plural: 'products' }}
             items={products}
-            renderItem={(product) => (
-              <ResourceItem
-                key={product.id}
-                id={product.id}
-                url={`/products/${product.handle}/edit`}
-                media={
-                  <Thumbnail
-                    size="medium"
-                    source={product.image?.url ?? 'https://placehold.co/500x500'}
-                    alt={product.image?.alt ?? "Placeholder"}
-                  />
-                }
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 8 }}>
-                  <Text as="h4" variant="headingXl">{product.title}</Text>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Text as="span"><b>SKU:</b> {product.sku}</Text>
-                    <StatusBadge status={product.status} />
-                  </div>
-                </div>
-              </ResourceItem>
-            )}
+            renderItem={(product) => <Product product={product} />}
           />
-          <ButtonGroup>
+          <InlineStack>
             <Button
-              disabled={!pageInfo!.hasPreviousPage || loading}
-              onClick={onLoadPreviousPage}
-              icon={ArrowLeftIcon}
-              accessibilityLabel="Previous page"
-            />
-            <Button
-              disabled={!pageInfo!.hasNextPage || loading}
-              onClick={onLoadNextPage}
-              icon={ArrowRightIcon}
-              accessibilityLabel="Next page"
-            />
-          </ButtonGroup>
+                variant="secondary"
+                url="/products/new"
+                accessibilityLabel="Create new product"
+                icon={PlusIcon}
+              >
+                Create new product
+            </Button>
+
+            <div style={{ flex: 1 }} />
+
+            <ButtonGroup>
+              <Button
+                disabled={!pageInfo!.hasPreviousPage || loading}
+                onClick={onLoadPreviousPage}
+                icon={ArrowLeftIcon}
+                accessibilityLabel="Previous page"
+              />
+              <Button
+                disabled={!pageInfo!.hasNextPage || loading}
+                onClick={onLoadNextPage}
+                icon={ArrowRightIcon}
+                accessibilityLabel="Next page"
+              />
+            </ButtonGroup>
+          </InlineStack>
         </div>
       </Card>
     </Page>
   )
 }
 
+const Product = ({ product }: { product: Product }) => (
+  <ResourceItem
+    key={product.id}
+    id={product.id}
+    url={`/products/${product.handle}/edit`}
+    media={
+      <Thumbnail
+        size="medium"
+        source={product.image?.url ?? 'https://placehold.co/500x500'}
+        alt={product.image?.alt ?? "Placeholder"}
+      />
+    }
+  >
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 8 }}>
+      <Text as="h4" variant="headingXl">{product.title}</Text>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Text as="span"><b>SKU:</b> {product.sku}</Text>
+        <StatusBadge status={product.status} />
+      </div>
+    </div>
+  </ResourceItem>
+)
+
 const StatusBadge = ({ status }: { status: Product['status'] }) => {
   switch (status) {
-    case 'DRAFT':
+    case ProductStatus.Draft:
       return <Badge tone="info">Draft</Badge>
-    case 'ACTIVE':
+    case ProductStatus.Active:
       return <Badge tone="success">Active</Badge>
-    case 'ARCHIVED':
+    case ProductStatus.Archived:
       return <Badge>Archived</Badge>
   }
 }

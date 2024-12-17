@@ -130,6 +130,13 @@ export default function UpsertProduct() {
           <InlineStack align="end">
             <ButtonGroup>
               <Button
+                variant="secondary"
+                onClick={() => navigate('/products')}
+                accessibilityLabel="Cancel"
+              >
+                Cancel
+              </Button>
+              <Button
                 disabled={!isDirty || !isValid || loading}
                 variant="primary"
                 onClick={onSubmit}
