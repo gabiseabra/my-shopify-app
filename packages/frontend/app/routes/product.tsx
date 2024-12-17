@@ -63,7 +63,7 @@ export default function Products() {
   const [loading, setLoading] = useState<boolean>(false);
   const [productUpdate] = useMutation<{ productUpdate: Product }>(UPDATE_PRODUCT);
   const [productCreate] = useMutation<{ productCreate: Product }>(CREATE_PRODUCT);
-  const { data } = useQuery<{ product: Product }>(GET_PRODUCT, {
+  const { data, client } = useQuery<{ product: Product }>(GET_PRODUCT, {
     skip: !handle,
     variables: { handle },
     onCompleted(data) {
@@ -81,8 +81,13 @@ export default function Products() {
         await productUpdate({ variables: { id: product?.id, product: state } });
       } else {
         const { data } = await productCreate({ variables: { product: state } });
-        console.log(data);
-        if (data?.productCreate) navigate(`/products/${data.productCreate.handle}/edit`, { replace: true });
+        if (!data) throw new Error('Failed to create product.')
+        await client.writeQuery({
+          query: GET_PRODUCT,
+          variables: { handle: data.productCreate.handle },
+          data: { product: data.productCreate },
+        })
+        navigate(`/products/${data.productCreate.handle}/edit`, { replace: true });
       }
     } finally {
       setLoading(false);
