@@ -33,7 +33,7 @@ const GET_PRODUCTS = gql`
   }
 `
 
-export default function Products() {
+export default function ListProducts() {
   const { data, fetchMore, loading } = useQuery<{ products: ProductConnection }>(GET_PRODUCTS, {
     variables: { first: PRODUCTS_PER_PAGE },
     notifyOnNetworkStatusChange: true,

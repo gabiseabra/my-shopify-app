@@ -56,7 +56,7 @@ const validateProductInput = (input: ProductInput): boolean => Boolean(
   input.title && input.title.trim().length > 0
 )
 
-export default function Products() {
+export default function UpsertProduct() {
   const navigate = useNavigate();
   const { handle } = useParams<{ handle: string }>();
   const [state, setState] = useState<ProductInput>(initialProductInput);
