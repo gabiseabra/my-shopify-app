@@ -133,7 +133,6 @@ export const ProductFragment = gql`
     title
     handle
     defaultCursor
-    descriptionHtml
     featuredMedia {
       ...MediaFragment
     }
