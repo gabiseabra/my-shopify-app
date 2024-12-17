@@ -1,8 +1,8 @@
 type Query {
   """Returns a Product resource by ID."""
   product(
-    """The ID of the Product to return."""
-    id: ID!
+    """The handle of the Product to return."""
+    handle: String!
   ): Product
 
   """Returns a list of products."""
@@ -76,37 +76,16 @@ type Mutation {
 
 """
 The `Product` object lets you manage products in a merchant’s store.
-
-Products are the goods and services that merchants offer to customers. They can
-include various details such as title, description, price, images, and options
-such as size or color.
-You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
-to create or update different versions of the same product.
-You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
-Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
-
-Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
-including limitations and considerations.
 """
 type Product {
-  """
-  A default [cursor](https://shopify.dev/api/usage/pagination-graphql) that
-  returns the single next record, sorted ascending by ID.
-  """
-  defaultCursor: String!
+  """A globally-unique ID."""
+  id: ID!
 
   """
-  The description of the product, with
-  HTML tags. For example, the description might include
-  bold `<strong></strong>` and italic `<i></i>` text.
+  The name for the product that displays to customers. The title is used to construct the product's handle.
+  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
   """
-  descriptionHtml: HTML!
-
-  """
-  The featured [media](https://shopify.dev/docs/apps/build/online-store/product-media)
-  associated with the product.
-  """
-  featuredMedia: Media
+  title: String!
 
   """
   A unique, human-readable string of the product's title. A handle can contain
@@ -115,26 +94,26 @@ type Product {
   """
   handle: String!
 
-  """A globally-unique ID."""
-  id: ID!
-
-  """
-  The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
-  that are associated with a product.
-  """
-  seo: SEO!
-
   """
   The [product status](https://help.shopify.com/manual/products/details/product-details-page#product-status),
   which controls visibility across all sales channels.
   """
   status: ProductStatus!
 
+  """SKU for the inventory item associated with the variant, if any."""
+  sku: String
+
   """
-  The name for the product that displays to customers. The title is used to construct the product's handle.
-  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+  A default [cursor](https://shopify.dev/api/usage/pagination-graphql) that
+  returns the single next record, sorted ascending by ID.
   """
-  title: String!
+  defaultCursor: String!
+
+  """
+  The featured [media](https://shopify.dev/docs/apps/build/online-store/product-media)
+  associated with the product.
+  """
+  image: Image
 }
 
 """An auto-generated type for paginating through multiple Products."""
@@ -173,10 +152,10 @@ type ProductEdge {
 
 input ProductInput {
   """
-  The description of the product, with HTML tags.
-  For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
+  The name for the product that displays to customers. The title is used to construct the product's handle.
+  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
   """
-  descriptionHtml: String
+  title: String
 
   """
   A unique, human-readable string of the product's title. A handle can contain
@@ -187,22 +166,13 @@ input ProductInput {
   handle: String
 
   """
-  The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
-  that are associated with a product.
-  """
-  seo: SEOInput
-
-  """
   The [product status](https://help.shopify.com/manual/products/details/product-details-page#product-status),
   which controls visibility across all sales channels.
   """
   status: ProductStatus
 
-  """
-  The name for the product that displays to customers. The title is used to construct the product's handle.
-  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
-  """
-  title: String
+  """SKU for the inventory item associated with the variant, if any."""
+  sku: String
 }
 
 """The possible product statuses."""
@@ -259,28 +229,13 @@ enum ProductSortKeys {
   VENDOR
 }
 
-"""SEO information."""
-type SEO {
-  """SEO Description."""
-  description: String
-
-  """SEO Title."""
-  title: String
-}
-
-"""The input fields for SEO information."""
-input SEOInput {
-  """SEO title of the product."""
-  title: String
-
-  """SEO description of the product."""
-  description: String
-}
-
 """Represents an image resource."""
 type Image {
   """A unique ID for the image."""
   id: ID
+
+  """The alt text associated with the media."""
+  alt: String
 
   """
   The location of the image as a URL.
@@ -296,80 +251,6 @@ type Image {
   The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
   """
   height: Int
-}
-
-"""Represents a media interface."""
-type Media {
-  """A word or phrase to share the nature or contents of a media."""
-  alt: String
-
-  """A globally-unique ID."""
-  id: ID!
-
-  """The media content type."""
-  mediaContentType: MediaContentType!
-
-  """Current status of the media."""
-  status: MediaStatus!
-
-  """The preview image for the media."""
-  preview: MediaPreviewImage
-}
-
-"""Represents the preview image for a media."""
-type MediaPreviewImage {
-  """
-  The preview image for the media. Returns `null` until `status` is `READY`.
-  """
-  image: Image
-
-  """Current status of the preview image."""
-  status: MediaPreviewImageStatus!
-}
-
-"""The possible content types for a media object."""
-enum MediaContentType {
-  """A Shopify-hosted video."""
-  VIDEO
-
-  """An externally hosted video."""
-  EXTERNAL_VIDEO
-
-  """A 3d model."""
-  MODEL_3D
-
-  """A Shopify-hosted image."""
-  IMAGE
-}
-
-"""The possible statuses for a media preview image."""
-enum MediaPreviewImageStatus {
-  """Preview image is uploaded but not yet processed."""
-  UPLOADED
-
-  """Preview image is being processed."""
-  PROCESSING
-
-  """Preview image is ready to be displayed."""
-  READY
-
-  """Preview image processing has failed."""
-  FAILED
-}
-
-"""The possible statuses for a media object."""
-enum MediaStatus {
-  """Media has been uploaded but not yet processed."""
-  UPLOADED
-
-  """Media is being processed."""
-  PROCESSING
-
-  """Media is ready to be displayed."""
-  READY
-
-  """Media processing has failed."""
-  FAILED
 }
 
 type Count {

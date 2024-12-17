@@ -37,6 +37,8 @@ export enum CountPrecision {
 /** Represents an image resource. */
 export type Image = {
   __typename?: 'Image';
+  /** The alt text associated with the media. */
+  alt?: Maybe<Scalars['String']['output']>;
   /** The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify. */
   height?: Maybe<Scalars['Int']['output']>;
   /** A unique ID for the image. */
@@ -46,66 +48,6 @@ export type Image = {
   /** The original width of the image in pixels. Returns `null` if the image isn't hosted by Shopify. */
   width?: Maybe<Scalars['Int']['output']>;
 };
-
-/** Represents a media interface. */
-export type Media = {
-  __typename?: 'Media';
-  /** A word or phrase to share the nature or contents of a media. */
-  alt?: Maybe<Scalars['String']['output']>;
-  /** A globally-unique ID. */
-  id: Scalars['ID']['output'];
-  /** The media content type. */
-  mediaContentType: MediaContentType;
-  /** The preview image for the media. */
-  preview?: Maybe<MediaPreviewImage>;
-  /** Current status of the media. */
-  status: MediaStatus;
-};
-
-/** The possible content types for a media object. */
-export enum MediaContentType {
-  /** An externally hosted video. */
-  ExternalVideo = 'EXTERNAL_VIDEO',
-  /** A Shopify-hosted image. */
-  Image = 'IMAGE',
-  /** A 3d model. */
-  Model_3D = 'MODEL_3D',
-  /** A Shopify-hosted video. */
-  Video = 'VIDEO'
-}
-
-/** Represents the preview image for a media. */
-export type MediaPreviewImage = {
-  __typename?: 'MediaPreviewImage';
-  /** The preview image for the media. Returns `null` until `status` is `READY`. */
-  image?: Maybe<Image>;
-  /** Current status of the preview image. */
-  status: MediaPreviewImageStatus;
-};
-
-/** The possible statuses for a media preview image. */
-export enum MediaPreviewImageStatus {
-  /** Preview image processing has failed. */
-  Failed = 'FAILED',
-  /** Preview image is being processed. */
-  Processing = 'PROCESSING',
-  /** Preview image is ready to be displayed. */
-  Ready = 'READY',
-  /** Preview image is uploaded but not yet processed. */
-  Uploaded = 'UPLOADED'
-}
-
-/** The possible statuses for a media object. */
-export enum MediaStatus {
-  /** Media processing has failed. */
-  Failed = 'FAILED',
-  /** Media is being processed. */
-  Processing = 'PROCESSING',
-  /** Media is ready to be displayed. */
-  Ready = 'READY',
-  /** Media has been uploaded but not yet processed. */
-  Uploaded = 'UPLOADED'
-}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -161,20 +103,7 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
-/**
- * The `Product` object lets you manage products in a merchant’s store.
- *
- * Products are the goods and services that merchants offer to customers. They can
- * include various details such as title, description, price, images, and options
- * such as size or color.
- * You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
- * to create or update different versions of the same product.
- * You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
- * Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
- *
- * Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
- * including limitations and considerations.
- */
+/** The `Product` object lets you manage products in a merchant’s store. */
 export type Product = {
   __typename?: 'Product';
   /**
@@ -182,17 +111,6 @@ export type Product = {
    * returns the single next record, sorted ascending by ID.
    */
   defaultCursor: Scalars['String']['output'];
-  /**
-   * The description of the product, with
-   * HTML tags. For example, the description might include
-   * bold `<strong></strong>` and italic `<i></i>` text.
-   */
-  descriptionHtml: Scalars['HTML']['output'];
-  /**
-   * The featured [media](https://shopify.dev/docs/apps/build/online-store/product-media)
-   * associated with the product.
-   */
-  featuredMedia?: Maybe<Media>;
   /**
    * A unique, human-readable string of the product's title. A handle can contain
    * letters, hyphens (`-`), and numbers, but no spaces.
@@ -202,10 +120,12 @@ export type Product = {
   /** A globally-unique ID. */
   id: Scalars['ID']['output'];
   /**
-   * The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
-   * that are associated with a product.
+   * The featured [media](https://shopify.dev/docs/apps/build/online-store/product-media)
+   * associated with the product.
    */
-  seo: Seo;
+  image?: Maybe<Image>;
+  /** SKU for the inventory item associated with the variant, if any. */
+  sku?: Maybe<Scalars['String']['output']>;
   /**
    * The [product status](https://help.shopify.com/manual/products/details/product-details-page#product-status),
    * which controls visibility across all sales channels.
@@ -247,22 +167,14 @@ export type ProductEdge = {
 
 export type ProductInput = {
   /**
-   * The description of the product, with HTML tags.
-   * For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
-   */
-  descriptionHtml?: InputMaybe<Scalars['String']['input']>;
-  /**
    * A unique, human-readable string of the product's title. A handle can contain
    * letters, hyphens (`-`), and numbers, but no spaces.
    * The handle is used in the online store URL for the product.
    * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
    */
   handle?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
-   * that are associated with a product.
-   */
-  seo?: InputMaybe<SeoInput>;
+  /** SKU for the inventory item associated with the variant, if any. */
+  sku?: InputMaybe<Scalars['String']['input']>;
   /**
    * The [product status](https://help.shopify.com/manual/products/details/product-details-page#product-status),
    * which controls visibility across all sales channels.
@@ -329,7 +241,7 @@ export type Query = {
 
 
 export type QueryProductArgs = {
-  id: Scalars['ID']['input'];
+  handle: Scalars['String']['input'];
 };
 
 
@@ -344,21 +256,4 @@ export type QueryProductsArgs = {
 
 export type QueryProductsCountArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** SEO information. */
-export type Seo = {
-  __typename?: 'SEO';
-  /** SEO Description. */
-  description?: Maybe<Scalars['String']['output']>;
-  /** SEO Title. */
-  title?: Maybe<Scalars['String']['output']>;
-};
-
-/** The input fields for SEO information. */
-export type SeoInput = {
-  /** SEO description of the product. */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** SEO title of the product. */
-  title?: InputMaybe<Scalars['String']['input']>;
 };

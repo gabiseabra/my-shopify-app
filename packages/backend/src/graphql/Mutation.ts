@@ -1,28 +1,28 @@
-import { query } from "../utils/shopify-api"
+import * as API from "../types";
+import * as Shopify from "../utils/shopify-api";
 import { gql } from "../utils/graphql-tag"
-import { ProductFragment } from "./fragments"
-import { Product, ProductInput } from "../types"
 
 const Mutation = {
-  async productCreate(input: { product: ProductInput }): Promise<Product> {
-    return (await query<{ productCreate: { product: Product } }>(gql`
+  async productCreate(input: { product: API.ProductInput }): Promise<API.Product> {
+    const data = (await Shopify.query<{ productCreate: { product: Shopify.Product } }>(gql`
       mutation productCreate($product: ProductCreateInput!) {
         productCreate(product: $product) {
           product { ...ProductFragment }
         }
       }
-      ${ProductFragment}
+      ${Shopify.ProductFragment}
     `, input)).productCreate.product
+    return Shopify.mkProduct(data);
   },
 
-  async productUpdate(input: { id: string, product: ProductInput }): Promise<Product> {
-    return (await query<{ productUpdate: { product: Product } }>(gql`
+  async productUpdate(input: { id: string, product: API.ProductInput }): Promise<API.Product> {
+    return (await Shopify.query<{ productUpdate: { product: Shopify.Product } }>(gql`
       mutation productUpdate($product: ProductUpdateInput!) {
         productUpdate(product: $product) {
           product { ...ProductFragment }
         }
       }
-      ${ProductFragment}
+      ${Shopify.ProductFragment}
     `, {
         product: {
           id: input.id,

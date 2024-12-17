@@ -1,8 +1,7 @@
 import { gql, useQuery } from "@apollo/client/index.js";
 import type { PageInfo, Product, ProductConnection } from "@my-shopify/backend";
-import { Button, ButtonGroup, Card, Page, ResourceItem, ResourceList, Text } from "@shopify/polaris";
+import { Badge, Button, ButtonGroup, Card, Page, ResourceItem, ResourceList, Text, Thumbnail } from "@shopify/polaris";
 import { ArrowLeftIcon, ArrowRightIcon } from "@shopify/polaris-icons";
-import Image from "~/components/Image";
 import Spinner from "~/components/Spinner";
 
 const PRODUCTS_PER_PAGE = 5;
@@ -14,19 +13,13 @@ const GET_PRODUCTS = gql`
         cursor
         node {
           id
-          status
           title
           handle
-          defaultCursor
-          descriptionHtml
-          seo { title, description }
-          featuredMedia {
+          sku
+          status
+          image {
             alt
-            preview {
-              image {
-                url
-              }
-            }
+            url
           }
         }
       }
@@ -84,15 +77,20 @@ export default function Products() {
                 id={product.id}
                 url={`/products/${product.handle}`}
                 media={
-                  <Image
-                    width={100}
-                    height={100}
-                    src={product.featuredMedia?.preview?.image?.url ?? 'https://placehold.co/500x500'}
-                    alt={product.featuredMedia?.alt ?? "Placeholder"}
+                  <Thumbnail
+                    size="medium"
+                    source={product.image?.url ?? 'https://placehold.co/500x500'}
+                    alt={product.image?.alt ?? "Placeholder"}
                   />
                 }
               >
-                <Text as="h3" variant="bodyLg">{product.title}</Text>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 8 }}>
+                  <Text as="h4" variant="headingXl">{product.title}</Text>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Text as="span"><b>SKU:</b> {product.sku}</Text>
+                    <StatusBadge status={product.status} />
+                  </div>
+                </div>
               </ResourceItem>
             )}
           />
@@ -114,4 +112,15 @@ export default function Products() {
       </Card>
     </Page>
   )
+}
+
+const StatusBadge = ({ status }: { status: Product['status'] }) => {
+  switch (status) {
+    case 'DRAFT':
+      return <Badge tone="info">Draft</Badge>
+    case 'ACTIVE':
+      return <Badge tone="success">Active</Badge>
+    case 'ARCHIVED':
+      return <Badge>Archived</Badge>
+  }
 }

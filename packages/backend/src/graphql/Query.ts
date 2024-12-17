@@ -1,18 +1,18 @@
-import { query } from "../utils/shopify-api";
+import * as API from "../types";
+import * as Shopify from "../utils/shopify-api";
 import { gql } from "../utils/graphql-tag";
-import { PageInfoFragment, ProductFragment } from "./fragments";
-import { Product, ProductConnection } from "../types";
 
 const Query = {
   async product(args: {
-    id: string
-  }): Promise<Product> {
-    return (await query<{ product: Product }>(gql`
+    handle: string
+  }): Promise<API.Product> {
+    const data = (await Shopify.query<{ product: Shopify.Product }>(gql`
       query product($id: ID!) {
         product(id: $id) { ...ProductFragment }
       }
-      ${ProductFragment}
+      ${Shopify.ProductFragment}
     `, args)).product;
+    return Shopify.mkProduct(data);
   },
 
   async products(args: {
@@ -21,32 +21,28 @@ const Query = {
     last?: number
     before?: string
     sortKey?: string
-  }): Promise<ProductConnection> {
-    return (await query<{ products: ProductConnection }>(gql`
-      query products(
-        $first: Int
-        $after: String
-        $last: Int
-        $before: String
-        $sortKey: ProductSortKeys = ID
-      ) {
-        products(
-          first: $first
-          after: $after
-          last: $last
-          before: $before
-          sortKey: $sortKey
-        ) {
+  }): Promise<API.ProductConnection> {
+    const data = (await Shopify.query<{ products: Shopify.Connection<Shopify.Product> }>(gql`
+      query products($first: Int, $after: String, $last: Int, $before: String, $sortKey: ProductSortKeys) {
+        products(first: $first, after: $after, last: $last, before: $before, sortKey: $sortKey) {
           edges {
             cursor
             node { ...ProductFragment }
           }
-          pageInfo { ...PageInfoFragment }
+          nodes { ...ProductFragment }
+          pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
         }
       }
-      ${ProductFragment}
-      ${PageInfoFragment}
-      `, args)).products;
+      ${Shopify.ProductFragment}
+    `, args)).products;
+    return {
+      edges: data.edges.map(({ cursor, node }) => ({
+        cursor,
+        node: Shopify.mkProduct(node),
+      })),
+      nodes: data.nodes.map(Shopify.mkProduct),
+      pageInfo: data.pageInfo,
+    };
   },
 }
 
