@@ -16,20 +16,29 @@ const Query = {
   },
 
   async products(args: {
+    first?: number
     after?: string
+    last?: number
+    before?: string
     sortKey?: string
   }): Promise<ProductConnection> {
     return (await query<{ products: ProductConnection }>(gql`
       query products(
+        $first: Int
         $after: String
+        $last: Int
+        $before: String
         $sortKey: ProductSortKeys = ID
       ) {
         products(
-          first: 5
+          first: $first
           after: $after
+          last: $last
+          before: $before
           sortKey: $sortKey
         ) {
           edges {
+            cursor
             node { ...ProductFragment }
           }
           pageInfo { ...PageInfoFragment }

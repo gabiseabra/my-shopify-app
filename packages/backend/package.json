@@ -17,6 +17,7 @@
     "build": "npm run codegen && npm run tsc"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "graphql": "^16.10.0",
     "graphql-http": "^1.22.3",
@@ -28,6 +29,7 @@
     "@graphql-codegen/add": "^5.0.3",
     "@graphql-codegen/cli": "^5.0.3",
     "@graphql-codegen/typescript": "^4.1.2",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "nodemon": "^3.1.9"
   }

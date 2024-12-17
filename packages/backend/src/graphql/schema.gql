@@ -8,9 +8,24 @@ type Query {
   """Returns a list of products."""
   products(
     """
+    The first `n` elements from the [paginated list](https://shopify.dev/api/usage/pagination-graphql).
+    """
+    first: Int
+
+    """
     The elements that come after the specified [cursor](https://shopify.dev/api/usage/pagination-graphql).
     """
     after: String
+
+    """
+    The last `n` elements from the [paginated list](https://shopify.dev/api/usage/pagination-graphql).
+    """
+    last: Int
+
+    """
+    The elements that come before the specified [cursor](https://shopify.dev/api/usage/pagination-graphql).
+    """
+    before: String
 
     """
     Sort the underlying list using a key. If your query is slow or returns an
@@ -41,7 +56,7 @@ type Mutation {
   """
   Updates a product.
   
-  For versions \`2024-01\` and older:
+  For versions `2024-01` and older:
   If you update a product and only include some variants in the update,
   then any variants not included will be deleted.
   
@@ -60,7 +75,7 @@ type Mutation {
 }
 
 """
-The \`Product\` object lets you manage products in a merchant’s store.
+The `Product` object lets you manage products in a merchant’s store.
 
 Products are the goods and services that merchants offer to customers. They can
 include various details such as title, description, price, images, and options
@@ -83,7 +98,7 @@ type Product {
   """
   The description of the product, with
   HTML tags. For example, the description might include
-  bold \`<strong></strong>\` and italic \`<i></i>\` text.
+  bold `<strong></strong>` and italic `<i></i>` text.
   """
   descriptionHtml: HTML!
 
@@ -95,7 +110,7 @@ type Product {
 
   """
   A unique, human-readable string of the product's title. A handle can contain
-  letters, hyphens (\`-\`), and numbers, but no spaces.
+  letters, hyphens (`-`), and numbers, but no spaces.
   The handle is used in the online store URL for the product.
   """
   handle: String!
@@ -117,7 +132,7 @@ type Product {
 
   """
   The name for the product that displays to customers. The title is used to construct the product's handle.
-  For example, if a product is titled "Black Sunglasses", then the handle is \`black-sunglasses\`.
+  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
   """
   title: String!
 }
@@ -159,15 +174,15 @@ type ProductEdge {
 input ProductInput {
   """
   The description of the product, with HTML tags.
-  For example, the description might include bold \`<strong></strong>\` and italic \`<i></i>\` text.
+  For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
   """
   descriptionHtml: String
 
   """
   A unique, human-readable string of the product's title. A handle can contain
-  letters, hyphens (\`-\`), and numbers, but no spaces.
+  letters, hyphens (`-`), and numbers, but no spaces.
   The handle is used in the online store URL for the product.
-  For example, if a product is titled "Black Sunglasses", then the handle is \`black-sunglasses\`.
+  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
   """
   handle: String
 
@@ -185,7 +200,7 @@ input ProductInput {
 
   """
   The name for the product that displays to customers. The title is used to construct the product's handle.
-  For example, if a product is titled "Black Sunglasses", then the handle is \`black-sunglasses\`.
+  For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
   """
   title: String
 }
@@ -212,35 +227,35 @@ enum ProductStatus {
 }
 
 enum ProductSortKeys {
-  """Sort by the \`created_at\` value."""
+  """Sort by the `created_at` value."""
   CREATED_AT
 
-  """Sort by the \`id\` value."""
+  """Sort by the `id` value."""
   ID
 
-  """Sort by the \`inventory_total\` value."""
+  """Sort by the `inventory_total` value."""
   INVENTORY_TOTAL
 
-  """Sort by the \`product_type\` value."""
+  """Sort by the `product_type` value."""
   PRODUCT_TYPE
 
-  """Sort by the \`published_at\` value."""
+  """Sort by the `published_at` value."""
   PUBLISHED_AT
 
   """
-  Sort by relevance to the search terms when the \`query\` parameter is specified on the connection.
+  Sort by relevance to the search terms when the `query` parameter is specified on the connection.
   Don't use this sort key when no search query is specified.
   [Pagination](https://shopify.dev/api/usage/pagination-graphql) isn't supported when using this sort key.
   """
   RELEVANCE
 
-  """Sort by the \`title\` value."""
+  """Sort by the `title` value."""
   TITLE
 
-  """Sort by the \`updated_at\` value."""
+  """Sort by the `updated_at` value."""
   UPDATED_AT
 
-  """Sort by the \`vendor\` value."""
+  """Sort by the `vendor` value."""
   VENDOR
 }
 
@@ -273,12 +288,12 @@ type Image {
   url: URL!
 
   """
-  The original width of the image in pixels. Returns \`null\` if the image isn't hosted by Shopify.
+  The original width of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
   """
   width: Int
 
   """
-  The original height of the image in pixels. Returns \`null\` if the image isn't hosted by Shopify.
+  The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
   """
   height: Int
 }
@@ -304,7 +319,7 @@ type Media {
 """Represents the preview image for a media."""
 type MediaPreviewImage {
   """
-  The preview image for the media. Returns \`null\` until \`status\` is \`READY\`.
+  The preview image for the media. Returns `null` until `status` is `READY`.
   """
   image: Image
 

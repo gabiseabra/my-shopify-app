@@ -10,9 +10,13 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@apollo/client": "^3.12.3",
+    "@my-shopify/backend": "^1.0.0",
     "@react-router/node": "^7.0.2",
     "@react-router/serve": "^7.0.2",
     "@shopify/polaris": "^13.9.1",
+    "@shopify/polaris-icons": "^9.3.0",
+    "graphql": "^16.10.0",
     "isbot": "^5.1.17",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

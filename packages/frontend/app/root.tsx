@@ -12,7 +12,14 @@ import stylesheet from "./app.css?url";
 
 import '@shopify/polaris/build/esm/styles.css';
 import enTranslations from '@shopify/polaris/locales/en.json';
-import {AppProvider} from '@shopify/polaris';
+import { AppProvider, Frame } from '@shopify/polaris';
+
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client/index.js';
+
+const client = new ApolloClient({
+  uri: `//localhost:${import.meta.env.VITE_BE_PORT}/graphql`,
+  cache: new InMemoryCache(),
+});
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -49,7 +56,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <AppProvider i18n={enTranslations}>
-      <Outlet />
+      <ApolloProvider client={client}>
+        <Frame>
+          <Outlet />
+        </Frame>
+      </ApolloProvider>
     </AppProvider>
   );
 }

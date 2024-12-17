@@ -37,13 +37,13 @@ export enum CountPrecision {
 /** Represents an image resource. */
 export type Image = {
   __typename?: 'Image';
-  /** The original height of the image in pixels. Returns \`null\` if the image isn't hosted by Shopify. */
+  /** The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify. */
   height?: Maybe<Scalars['Int']['output']>;
   /** A unique ID for the image. */
   id?: Maybe<Scalars['ID']['output']>;
   /** The location of the image as a URL. */
   url: Scalars['URL']['output'];
-  /** The original width of the image in pixels. Returns \`null\` if the image isn't hosted by Shopify. */
+  /** The original width of the image in pixels. Returns `null` if the image isn't hosted by Shopify. */
   width?: Maybe<Scalars['Int']['output']>;
 };
 
@@ -77,7 +77,7 @@ export enum MediaContentType {
 /** Represents the preview image for a media. */
 export type MediaPreviewImage = {
   __typename?: 'MediaPreviewImage';
-  /** The preview image for the media. Returns \`null\` until \`status\` is \`READY\`. */
+  /** The preview image for the media. Returns `null` until `status` is `READY`. */
   image?: Maybe<Image>;
   /** Current status of the preview image. */
   status: MediaPreviewImageStatus;
@@ -119,7 +119,7 @@ export type Mutation = {
   /**
    * Updates a product.
    *
-   * For versions \`2024-01\` and older:
+   * For versions `2024-01` and older:
    * If you update a product and only include some variants in the update,
    * then any variants not included will be deleted.
    *
@@ -162,7 +162,7 @@ export type PageInfo = {
 };
 
 /**
- * The \`Product\` object lets you manage products in a merchant’s store.
+ * The `Product` object lets you manage products in a merchant’s store.
  *
  * Products are the goods and services that merchants offer to customers. They can
  * include various details such as title, description, price, images, and options
@@ -185,7 +185,7 @@ export type Product = {
   /**
    * The description of the product, with
    * HTML tags. For example, the description might include
-   * bold \`<strong></strong>\` and italic \`<i></i>\` text.
+   * bold `<strong></strong>` and italic `<i></i>` text.
    */
   descriptionHtml: Scalars['HTML']['output'];
   /**
@@ -195,7 +195,7 @@ export type Product = {
   featuredMedia?: Maybe<Media>;
   /**
    * A unique, human-readable string of the product's title. A handle can contain
-   * letters, hyphens (\`-\`), and numbers, but no spaces.
+   * letters, hyphens (`-`), and numbers, but no spaces.
    * The handle is used in the online store URL for the product.
    */
   handle: Scalars['String']['output'];
@@ -213,7 +213,7 @@ export type Product = {
   status: ProductStatus;
   /**
    * The name for the product that displays to customers. The title is used to construct the product's handle.
-   * For example, if a product is titled "Black Sunglasses", then the handle is \`black-sunglasses\`.
+   * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
    */
   title: Scalars['String']['output'];
 };
@@ -248,14 +248,14 @@ export type ProductEdge = {
 export type ProductInput = {
   /**
    * The description of the product, with HTML tags.
-   * For example, the description might include bold \`<strong></strong>\` and italic \`<i></i>\` text.
+   * For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
    */
   descriptionHtml?: InputMaybe<Scalars['String']['input']>;
   /**
    * A unique, human-readable string of the product's title. A handle can contain
-   * letters, hyphens (\`-\`), and numbers, but no spaces.
+   * letters, hyphens (`-`), and numbers, but no spaces.
    * The handle is used in the online store URL for the product.
-   * For example, if a product is titled "Black Sunglasses", then the handle is \`black-sunglasses\`.
+   * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
    */
   handle?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -270,33 +270,33 @@ export type ProductInput = {
   status?: InputMaybe<ProductStatus>;
   /**
    * The name for the product that displays to customers. The title is used to construct the product's handle.
-   * For example, if a product is titled "Black Sunglasses", then the handle is \`black-sunglasses\`.
+   * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
    */
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum ProductSortKeys {
-  /** Sort by the \`created_at\` value. */
+  /** Sort by the `created_at` value. */
   CreatedAt = 'CREATED_AT',
-  /** Sort by the \`id\` value. */
+  /** Sort by the `id` value. */
   Id = 'ID',
-  /** Sort by the \`inventory_total\` value. */
+  /** Sort by the `inventory_total` value. */
   InventoryTotal = 'INVENTORY_TOTAL',
-  /** Sort by the \`product_type\` value. */
+  /** Sort by the `product_type` value. */
   ProductType = 'PRODUCT_TYPE',
-  /** Sort by the \`published_at\` value. */
+  /** Sort by the `published_at` value. */
   PublishedAt = 'PUBLISHED_AT',
   /**
-   * Sort by relevance to the search terms when the \`query\` parameter is specified on the connection.
+   * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    * [Pagination](https://shopify.dev/api/usage/pagination-graphql) isn't supported when using this sort key.
    */
   Relevance = 'RELEVANCE',
-  /** Sort by the \`title\` value. */
+  /** Sort by the `title` value. */
   Title = 'TITLE',
-  /** Sort by the \`updated_at\` value. */
+  /** Sort by the `updated_at` value. */
   UpdatedAt = 'UPDATED_AT',
-  /** Sort by the \`vendor\` value. */
+  /** Sort by the `vendor` value. */
   Vendor = 'VENDOR'
 }
 
@@ -335,6 +335,9 @@ export type QueryProductArgs = {
 
 export type QueryProductsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
   sortKey?: InputMaybe<ProductSortKeys>;
 };
 
