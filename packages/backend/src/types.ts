@@ -18,22 +18,6 @@ export type Scalars = {
   URL: { input: any; output: any; }
 };
 
-export type Count = {
-  __typename?: 'Count';
-  /** The count of elements. */
-  count: Scalars['Int']['output'];
-  /** The count's precision, or the exactness of the value. */
-  precision: CountPrecision;
-};
-
-/** The precision of the value returned by a count field. */
-export enum CountPrecision {
-  /** The count is at least the value. A limit was imposed and reached. */
-  AtLeast = 'AT_LEAST',
-  /** The count is exactly the value. */
-  Exact = 'EXACT'
-}
-
 /** Represents an image resource. */
 export type Image = {
   __typename?: 'Image';
@@ -235,8 +219,6 @@ export type Query = {
   product?: Maybe<Product>;
   /** Returns a list of products. */
   products: ProductConnection;
-  /** Count of products. Limited to a maximum of 10000. */
-  productsCount?: Maybe<Count>;
 };
 
 
@@ -251,9 +233,4 @@ export type QueryProductsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   sortKey?: InputMaybe<ProductSortKeys>;
-};
-
-
-export type QueryProductsCountArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
 };

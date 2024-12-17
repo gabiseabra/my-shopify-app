@@ -39,16 +39,6 @@ type Query {
     """
     sortKey: ProductSortKeys = ID
   ): ProductConnection!
-
-  """
-  Count of products. Limited to a maximum of 10000.
-  """
-  productsCount(
-    """
-    The upper bound on count value before returning a result.
-    """
-    limit: Int
-  ): Count
 }
 
 type Mutation {
@@ -299,33 +289,6 @@ type Image {
   The original height of the image in pixels. Returns `null` if the image isn't hosted by Shopify.
   """
   height: Int
-}
-
-type Count {
-  """
-  The count of elements.
-  """
-  count: Int!
-
-  """
-  The count's precision, or the exactness of the value.
-  """
-  precision: CountPrecision!
-}
-
-"""
-The precision of the value returned by a count field.
-"""
-enum CountPrecision {
-  """
-  The count is exactly the value.
-  """
-  EXACT
-
-  """
-  The count is at least the value. A limit was imposed and reached.
-  """
-  AT_LEAST
 }
 
 """
