@@ -4,6 +4,6 @@
     "types": ["node", "node-env"],
     "outDir": "./build",
     "module": "ESNext",
-    "moduleResolution": "bundler",
-  },
+    "moduleResolution": "bundler"
+  }
 }

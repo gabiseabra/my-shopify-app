@@ -1,10 +1,18 @@
-import { gql, useMutation, useQuery } from "@apollo/client/index.js";
+import { gql, useMutation, useQuery } from '@apollo/client/index.js'
 import { ProductStatus } from '@my-shopify/backend'
-import type { Product, ProductInput } from "@my-shopify/backend";
-import { Button, ButtonGroup, FormLayout, InlineStack, Modal, Select, TextField } from "@shopify/polaris";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import Spinner from "~/components/Spinner";
+import type { Product, ProductInput } from '@my-shopify/backend'
+import {
+  Button,
+  ButtonGroup,
+  FormLayout,
+  InlineStack,
+  Modal,
+  Select,
+  TextField,
+} from '@shopify/polaris'
+import { useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
+import Spinner from '~/components/Spinner'
 
 const ProductFragment = gql`
   fragment ProductFragment on Product {
@@ -18,21 +26,27 @@ const ProductFragment = gql`
 
 const GET_PRODUCT = gql`
   query getProduct($handle: String!) {
-    product(handle: $handle) { ...ProductFragment }
+    product(handle: $handle) {
+      ...ProductFragment
+    }
   }
   ${ProductFragment}
 `
 
 const UPDATE_PRODUCT = gql`
   mutation productUpdate($id: ID!, $product: ProductInput!) {
-    productUpdate(id: $id, product: $product) { ...ProductFragment }
+    productUpdate(id: $id, product: $product) {
+      ...ProductFragment
+    }
   }
   ${ProductFragment}
 `
 
 const CREATE_PRODUCT = gql`
   mutation productCreate($product: ProductInput!) {
-    productCreate(product: $product) { ...ProductFragment }
+    productCreate(product: $product) {
+      ...ProductFragment
+    }
   }
   ${ProductFragment}
 `
@@ -49,50 +63,55 @@ const mkProductInput = (product: Product): ProductInput => ({
   status: product.status,
 })
 
-const compareProductInput = (a: ProductInput, b: ProductInput): boolean => (
+const compareProductInput = (a: ProductInput, b: ProductInput): boolean =>
   a.title !== b.title || a.sku !== b.sku || a.status !== b.status
-)
 
-const validateProductInput = (input: ProductInput): boolean => Boolean(
-  input.title && input.title.trim().length > 0
-)
+const validateProductInput = (input: ProductInput): boolean =>
+  Boolean(input.title && input.title.trim().length > 0)
 
 export default function UpsertProduct() {
-  const navigate = useNavigate();
-  const { handle } = useParams<{ handle: string }>();
-  const [input, setInput] = useState<ProductInput>(initialProductInput);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [productUpdate] = useMutation<{ productUpdate: Product }>(UPDATE_PRODUCT);
-  const [productCreate] = useMutation<{ productCreate: Product }>(CREATE_PRODUCT);
+  const navigate = useNavigate()
+  const { handle } = useParams<{ handle: string }>()
+  const [input, setInput] = useState<ProductInput>(initialProductInput)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [productUpdate] = useMutation<{ productUpdate: Product }>(
+    UPDATE_PRODUCT
+  )
+  const [productCreate] = useMutation<{ productCreate: Product }>(
+    CREATE_PRODUCT
+  )
   const { data, client } = useQuery<{ product: Product }>(GET_PRODUCT, {
     skip: !handle,
     variables: { handle },
     onCompleted(data) {
-      setInput(mkProductInput(data.product));
+      setInput(mkProductInput(data.product))
     },
-  });
-  const product: Product | undefined = data?.product;
-  const isDirty = !product || compareProductInput(mkProductInput(product), input);
-  const isValid = validateProductInput(input);
-  const initialLoading = handle && !product;
+  })
+  const product: Product | undefined = data?.product
+  const isDirty =
+    !product || compareProductInput(mkProductInput(product), input)
+  const isValid = validateProductInput(input)
+  const initialLoading = handle && !product
 
   const onSubmit = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       if (product) {
-        await productUpdate({ variables: { id: product?.id, product: input } });
+        await productUpdate({ variables: { id: product?.id, product: input } })
       } else {
-        const { data } = await productCreate({ variables: { product: input } });
+        const { data } = await productCreate({ variables: { product: input } })
         if (!data) throw new Error('Failed to create product.')
         client.writeQuery({
           query: GET_PRODUCT,
           variables: { handle: data.productCreate.handle },
           data: { product: data.productCreate },
         })
-        navigate(`/products/${data.productCreate.handle}/edit`, { replace: true });
+        navigate(`/products/${data.productCreate.handle}/edit`, {
+          replace: true,
+        })
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -101,25 +120,34 @@ export default function UpsertProduct() {
     <Modal
       open
       onClose={() => navigate('/products')}
-      title={(
-        initialLoading ? 'Loading...' :
-        product ? `Edit Product: ${product.title}` :
-        'Create Product'
-      )}
+      title={
+        initialLoading
+          ? 'Loading...'
+          : product
+            ? `Edit Product: ${product.title}`
+            : 'Create Product'
+      }
     >
-      <div style={{ position: 'relative', display: 'grid', gap: 'var(--p-space-400)', padding: 'var(--p-space-400)' }}>
-        {loading || initialLoading && <Spinner overlay />}
+      <div
+        style={{
+          position: 'relative',
+          display: 'grid',
+          gap: 'var(--p-space-400)',
+          padding: 'var(--p-space-400)',
+        }}
+      >
+        {loading || (initialLoading && <Spinner overlay />)}
         <FormLayout>
           <TextField
             autoComplete="off"
             label="Title"
-            value={input.title ?? ""}
+            value={input.title ?? ''}
             onChange={(title) => setInput({ ...input, title })}
           />
           <TextField
             autoComplete="off"
             label="SKU"
-            value={input.sku ?? ""}
+            value={input.sku ?? ''}
             onChange={(sku) => setInput({ ...input, sku })}
           />
           <Select
@@ -131,7 +159,9 @@ export default function UpsertProduct() {
               { label: 'Archived', value: ProductStatus.Archived },
             ]}
             value={input.status ?? ProductStatus.Draft}
-            onChange={(status) => setInput({ ...input, status: status as ProductStatus })}
+            onChange={(status) =>
+              setInput({ ...input, status: status as ProductStatus })
+            }
           />
         </FormLayout>
 

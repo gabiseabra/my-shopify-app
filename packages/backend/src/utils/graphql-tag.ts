@@ -7,6 +7,9 @@
  * @param values - Template values
  * @returns The concatenated string
  */
-export function gql(strings: TemplateStringsArray, ...values: string[]): string {
-  return strings.reduce((prev, curr, i) => prev + curr + (values[i] || ''), '');
+export function gql(
+  strings: TemplateStringsArray,
+  ...values: string[]
+): string {
+  return strings.reduce((prev, curr, i) => prev + curr + (values[i] || ''), '')
 }

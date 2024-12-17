@@ -4,6 +4,7 @@ This project is a simple Shopify application built to manage products using the 
 The application allows you to create, read, and update products and their single variant.
 
 The project is a NPM monorepo divided into two packages:
+
 - `packages/frontend`: The frontend is a React application using framework features of React Router V7 (from the Remix team).
 - `packages/backend`: The backend is a GraphQL server running on Express. It is a wrapper around the Shopify Admin API.
 
@@ -17,12 +18,14 @@ The project is a NPM monorepo divided into two packages:
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/gabiseabra/my-shopify-app.git
    cd my-shopify-app
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```

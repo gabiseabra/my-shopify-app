@@ -1,11 +1,17 @@
 type Query {
-  """Returns a Product resource by ID."""
+  """
+  Returns a Product resource by ID.
+  """
   product(
-    """The handle of the Product to return."""
+    """
+    The handle of the Product to return.
+    """
     handle: String!
   ): Product
 
-  """Returns a list of products."""
+  """
+  Returns a list of products.
+  """
   products(
     """
     The first `n` elements from the [paginated list](https://shopify.dev/api/usage/pagination-graphql).
@@ -34,9 +40,13 @@ type Query {
     sortKey: ProductSortKeys = ID
   ): ProductConnection!
 
-  """Count of products. Limited to a maximum of 10000."""
+  """
+  Count of products. Limited to a maximum of 10000.
+  """
   productsCount(
-    """The upper bound on count value before returning a result."""
+    """
+    The upper bound on count value before returning a result.
+    """
     limit: Int
   ): Count
 }
@@ -44,32 +54,36 @@ type Query {
 type Mutation {
   """
   Creates a product.
-  
+
   Learn more about the [product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model)
   and [adding product data](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/add-data).
   """
   productCreate(
-    """The properties of the new product."""
+    """
+    The properties of the new product.
+    """
     product: ProductInput
   ): Product
 
   """
   Updates a product.
-  
+
   For versions `2024-01` and older:
   If you update a product and only include some variants in the update,
   then any variants not included will be deleted.
-  
+
   To safely manage variants without the risk of
   deleting excluded variants, use
   [productVariantsBulkUpdate](https://shopify.dev/api/admin-graphql/latest/mutations/productvariantsbulkupdate).
-  
+
   If you want to update a single variant, then use
   [productVariantUpdate](https://shopify.dev/api/admin-graphql/latest/mutations/productvariantupdate).
   """
   productUpdate(
     id: ID!
-    """The updated properties for a product."""
+    """
+    The updated properties for a product.
+    """
     product: ProductInput
   ): Product
 }
@@ -78,7 +92,9 @@ type Mutation {
 The `Product` object lets you manage products in a merchant’s store.
 """
 type Product {
-  """A globally-unique ID."""
+  """
+  A globally-unique ID.
+  """
   id: ID!
 
   """
@@ -100,7 +116,9 @@ type Product {
   """
   status: ProductStatus!
 
-  """SKU for the inventory item associated with the variant, if any."""
+  """
+  SKU for the inventory item associated with the variant, if any.
+  """
   sku: String
 
   """
@@ -116,7 +134,9 @@ type Product {
   image: Image
 }
 
-"""An auto-generated type for paginating through multiple Products."""
+"""
+An auto-generated type for paginating through multiple Products.
+"""
 type ProductConnection {
   """
   The connection between the node and its parent. Each edge contains a minimum of the edge's cursor and the node.
@@ -146,7 +166,9 @@ type ProductEdge {
   """
   cursor: String!
 
-  """The item at the end of ProductEdge."""
+  """
+  The item at the end of ProductEdge.
+  """
   node: Product!
 }
 
@@ -171,11 +193,15 @@ input ProductInput {
   """
   status: ProductStatus
 
-  """SKU for the inventory item associated with the variant, if any."""
+  """
+  SKU for the inventory item associated with the variant, if any.
+  """
   sku: String
 }
 
-"""The possible product statuses."""
+"""
+The possible product statuses.
+"""
 enum ProductStatus {
   """
   The product is ready to sell and can be published to sales channels and apps.
@@ -197,19 +223,29 @@ enum ProductStatus {
 }
 
 enum ProductSortKeys {
-  """Sort by the `created_at` value."""
+  """
+  Sort by the `created_at` value.
+  """
   CREATED_AT
 
-  """Sort by the `id` value."""
+  """
+  Sort by the `id` value.
+  """
   ID
 
-  """Sort by the `inventory_total` value."""
+  """
+  Sort by the `inventory_total` value.
+  """
   INVENTORY_TOTAL
 
-  """Sort by the `product_type` value."""
+  """
+  Sort by the `product_type` value.
+  """
   PRODUCT_TYPE
 
-  """Sort by the `published_at` value."""
+  """
+  Sort by the `published_at` value.
+  """
   PUBLISHED_AT
 
   """
@@ -219,22 +255,34 @@ enum ProductSortKeys {
   """
   RELEVANCE
 
-  """Sort by the `title` value."""
+  """
+  Sort by the `title` value.
+  """
   TITLE
 
-  """Sort by the `updated_at` value."""
+  """
+  Sort by the `updated_at` value.
+  """
   UPDATED_AT
 
-  """Sort by the `vendor` value."""
+  """
+  Sort by the `vendor` value.
+  """
   VENDOR
 }
 
-"""Represents an image resource."""
+"""
+Represents an image resource.
+"""
 type Image {
-  """A unique ID for the image."""
+  """
+  A unique ID for the image.
+  """
   id: ID
 
-  """The alt text associated with the media."""
+  """
+  The alt text associated with the media.
+  """
   alt: String
 
   """
@@ -254,19 +302,29 @@ type Image {
 }
 
 type Count {
-  """The count of elements."""
+  """
+  The count of elements.
+  """
   count: Int!
 
-  """The count's precision, or the exactness of the value."""
+  """
+  The count's precision, or the exactness of the value.
+  """
   precision: CountPrecision!
 }
 
-"""The precision of the value returned by a count field."""
+"""
+The precision of the value returned by a count field.
+"""
 enum CountPrecision {
-  """The count is exactly the value."""
+  """
+  The count is exactly the value.
+  """
   EXACT
 
-  """The count is at least the value. A limit was imposed and reached."""
+  """
+  The count is at least the value. A limit was imposed and reached.
+  """
   AT_LEAST
 }
 
@@ -276,16 +334,24 @@ Returns information about pagination in a connection, in accordance with the
 For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
 """
 type PageInfo {
-  """The cursor corresponding to the last node in edges."""
+  """
+  The cursor corresponding to the last node in edges.
+  """
   endCursor: String
 
-  """Whether there are more pages to fetch following the current page."""
+  """
+  Whether there are more pages to fetch following the current page.
+  """
   hasNextPage: Boolean!
 
-  """Whether there are any pages prior to the current page."""
+  """
+  Whether there are any pages prior to the current page.
+  """
   hasPreviousPage: Boolean!
 
-  """The cursor corresponding to the first node in edges."""
+  """
+  The cursor corresponding to the first node in edges.
+  """
   startCursor: String
 }
 

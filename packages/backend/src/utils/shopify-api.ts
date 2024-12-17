@@ -1,36 +1,42 @@
-import { gql } from "./graphql-tag";
-import type * as API from "../types";
+import { gql } from './graphql-tag'
+import type * as API from '../types'
 
-const SHOPIFY_API_URL = process.env.SHOPIFY_API_URL;
-const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
+const SHOPIFY_API_URL = process.env.SHOPIFY_API_URL
+const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN
 
 /**
  * Run a GraphQL query against the Shopify Admin API.
  * @param {string} query     The GraphQL query to run.
  * @param {object} variables The variables to pass to the query.
  */
-export async function query<T extends object>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
-  const response = await fetch(`${SHOPIFY_API_URL}/admin/api/2024-07/graphql.json`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": SHOPIFY_ACCESS_TOKEN,
-    },
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  })
+export async function query<T extends object>(
+  query: string,
+  variables: Record<string, unknown> = {}
+): Promise<T> {
+  const response = await fetch(
+    `${SHOPIFY_API_URL}/admin/api/2024-07/graphql.json`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN,
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    }
+  )
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  const data = await response.json();
+  const data = await response.json()
 
   if (data.errors) {
-    throw new Error(`GraphQL error: ${JSON.stringify(data.errors)}`);
+    throw new Error(`GraphQL error: ${JSON.stringify(data.errors)}`)
   }
 
   return data.data
@@ -48,11 +54,14 @@ export type Connection<T> = {
   pageInfo: PageInfo
 }
 
-export const mapConnection = <A, B>(data: Connection<A>, fn: (a: A) => B): Connection<B> => ({
+export const mapConnection = <A, B>(
+  data: Connection<A>,
+  fn: (a: A) => B
+): Connection<B> => ({
   edges: data.edges.map(({ cursor, node }) => ({ cursor, node: fn(node) })),
   nodes: data.nodes.map(fn),
   pageInfo: data.pageInfo,
-});
+})
 
 export type PageInfo = {
   hasNextPage: boolean
@@ -68,16 +77,16 @@ export const PageInfoFragment = gql`
     startCursor
     endCursor
   }
-`;
+`
 
 export type Media = {
-  alt: string;
+  alt: string
   preview: {
     image: {
-      id: string;
-      url: string;
-      width: number;
-      height: number;
+      id: string
+      url: string
+      width: number
+      height: number
     }
   }
 }
@@ -94,7 +103,7 @@ export const MediaFragment = gql`
       }
     }
   }
-`;
+`
 
 export const mkImage = (data: Media): API.Image => ({
   id: data.preview?.image.id,
@@ -102,7 +111,7 @@ export const mkImage = (data: Media): API.Image => ({
   url: data.preview?.image.url,
   width: data.preview?.image.width,
   height: data.preview?.image.height,
-});
+})
 
 export type Product = {
   id: string
@@ -125,7 +134,9 @@ export const ProductFragment = gql`
     handle
     defaultCursor
     descriptionHtml
-    featuredMedia { ...MediaFragment }
+    featuredMedia {
+      ...MediaFragment
+    }
     variants(first: 1) {
       edges {
         node {
@@ -136,7 +147,7 @@ export const ProductFragment = gql`
     }
   }
   ${MediaFragment}
-`;
+`
 
 export const mkProduct = (data: Product): API.Product => ({
   id: data.id,
@@ -146,4 +157,4 @@ export const mkProduct = (data: Product): API.Product => ({
   defaultCursor: data.defaultCursor,
   sku: data.variants.edges[0]?.node.sku,
   image: data.featuredMedia && mkImage(data.featuredMedia),
-});
+})

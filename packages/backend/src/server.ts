@@ -1,10 +1,10 @@
-import fs from 'fs';
-import express from 'express';
-import cors from 'cors';
-import { createHandler } from 'graphql-http/lib/use/express';
-import Query from './graphql/Query';
-import Mutation from './graphql/Mutation';
-import { buildSchema } from 'graphql';
+import fs from 'fs'
+import express from 'express'
+import cors from 'cors'
+import { createHandler } from 'graphql-http/lib/use/express'
+import Query from './graphql/Query'
+import Mutation from './graphql/Mutation'
+import { buildSchema } from 'graphql'
 
 const app = express()
 
@@ -16,7 +16,7 @@ app.use(cors())
 
 // Create and use the GraphQL handler.
 app.all(
-  "/graphql",
+  '/graphql',
   createHandler({
     schema,
     rootValue: {
@@ -25,7 +25,7 @@ app.all(
     },
   })
 )
- 
+
 // Start the server at port
 const server = app.listen(BE_PORT)
 
@@ -35,8 +35,10 @@ const shutdown = () => {
   })
 }
 
-process.on('exit', shutdown);
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+process.on('exit', shutdown)
+process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown)
 
-console.log(`Running a GraphQL API server at http://localhost:${BE_PORT}/graphql`)
+console.log(
+  `Running a GraphQL API server at http://localhost:${BE_PORT}/graphql`
+)
