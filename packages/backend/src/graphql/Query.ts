@@ -12,6 +12,7 @@ const Query = {
       }
       ${Shopify.ProductFragment}
     `, args)).productByHandle;
+
     return Shopify.mkProduct(data);
   },
 
@@ -35,14 +36,8 @@ const Query = {
       }
       ${Shopify.ProductFragment}
     `, args)).products;
-    return {
-      edges: data.edges.map(({ cursor, node }) => ({
-        cursor,
-        node: Shopify.mkProduct(node),
-      })),
-      nodes: data.nodes.map(Shopify.mkProduct),
-      pageInfo: data.pageInfo,
-    };
+
+    return Shopify.mapConnection(data, Shopify.mkProduct);
   },
 }
 

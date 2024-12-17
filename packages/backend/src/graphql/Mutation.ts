@@ -4,7 +4,8 @@ import { gql } from "../utils/graphql-tag"
 
 const Mutation = {
   async productCreate(input: { product: API.ProductInput }): Promise<API.Product> {
-    // Create the product
+    // Create the product.
+    // @note The product is created with a single variant.
     const product = (await Shopify.query<{ productCreate: { product: Shopify.Product } }>(gql`
       mutation productCreate($product: ProductInput!) {
         productCreate(input: $product) {
@@ -23,22 +24,24 @@ const Mutation = {
     if (!variant) throw new Error(`Failed to create product variant`);
 
     // Update the product variant
-    (await Shopify.query(gql`
-      mutation productVariantUpdate($variant: ProductVariantInput!) {
-        productVariantUpdate(input: $variant) {
-          productVariant { id, sku }
+    if (input.product.sku) {
+      (await Shopify.query(gql`
+        mutation productVariantUpdate($variant: ProductVariantInput!) {
+          productVariantUpdate(input: $variant) {
+            productVariant { id, sku }
+          }
         }
-      }
-    `, {
-      variant: {
-        id: variant.id,
-        inventoryItem: { sku: input.product.sku },
-      }
-    }));
+      `, {
+        variant: {
+          id: variant.id,
+          inventoryItem: { sku: input.product.sku },
+        }
+      }));
+    }
 
     return {
       ...Shopify.mkProduct(product),
-      sku: input.product.sku,
+      sku: input.product.sku ?? '',
     }
   },
 

@@ -36,7 +36,8 @@ export async function query<T extends object>(query: string, variables: Record<s
   return data.data
 }
 
-/** Fragments and types for the Shopify Admin API, and helpers to convert these types to the public API types. */
+/** Below are the types and fragments for the Shopify Admin API, and
+ * some helper functions to convert these types to the public API types. */
 
 export type Connection<T> = {
   edges: {
@@ -46,6 +47,12 @@ export type Connection<T> = {
   nodes: T[]
   pageInfo: PageInfo
 }
+
+export const mapConnection = <A, B>(data: Connection<A>, fn: (a: A) => B): Connection<B> => ({
+  edges: data.edges.map(({ cursor, node }) => ({ cursor, node: fn(node) })),
+  nodes: data.nodes.map(fn),
+  pageInfo: data.pageInfo,
+});
 
 export type PageInfo = {
   hasNextPage: boolean

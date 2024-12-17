@@ -60,7 +60,7 @@ const validateProductInput = (input: ProductInput): boolean => Boolean(
 export default function UpsertProduct() {
   const navigate = useNavigate();
   const { handle } = useParams<{ handle: string }>();
-  const [state, setState] = useState<ProductInput>(initialProductInput);
+  const [input, setInput] = useState<ProductInput>(initialProductInput);
   const [loading, setLoading] = useState<boolean>(false);
   const [productUpdate] = useMutation<{ productUpdate: Product }>(UPDATE_PRODUCT);
   const [productCreate] = useMutation<{ productCreate: Product }>(CREATE_PRODUCT);
@@ -68,23 +68,23 @@ export default function UpsertProduct() {
     skip: !handle,
     variables: { handle },
     onCompleted(data) {
-      setState(mkProductInput(data.product));
+      setInput(mkProductInput(data.product));
     },
   });
   const product: Product | undefined = data?.product;
-  const isDirty = !product || compareProductInput(mkProductInput(product), state);
-  const isValid = validateProductInput(state);
+  const isDirty = !product || compareProductInput(mkProductInput(product), input);
+  const isValid = validateProductInput(input);
   const initialLoading = handle && !product;
 
   const onSubmit = async () => {
     try {
       setLoading(true);
       if (product) {
-        await productUpdate({ variables: { id: product?.id, product: state } });
+        await productUpdate({ variables: { id: product?.id, product: input } });
       } else {
-        const { data } = await productCreate({ variables: { product: state } });
+        const { data } = await productCreate({ variables: { product: input } });
         if (!data) throw new Error('Failed to create product.')
-        await client.writeQuery({
+        client.writeQuery({
           query: GET_PRODUCT,
           variables: { handle: data.productCreate.handle },
           data: { product: data.productCreate },
@@ -97,6 +97,7 @@ export default function UpsertProduct() {
   }
 
   return (
+    // TODO: render Modal in parent to show the closing animation
     <Modal
       open
       onClose={() => navigate('/products')}
@@ -112,14 +113,14 @@ export default function UpsertProduct() {
           <TextField
             autoComplete="off"
             label="Title"
-            value={state.title ?? ""}
-            onChange={(title) => setState({ ...state, title })}
+            value={input.title ?? ""}
+            onChange={(title) => setInput({ ...input, title })}
           />
           <TextField
             autoComplete="off"
             label="SKU"
-            value={state.sku ?? ""}
-            onChange={(sku) => setState({ ...state, sku })}
+            value={input.sku ?? ""}
+            onChange={(sku) => setInput({ ...input, sku })}
           />
           <Select
             label="Status"
@@ -129,8 +130,8 @@ export default function UpsertProduct() {
               { label: 'Draft', value: ProductStatus.Draft },
               { label: 'Archived', value: ProductStatus.Archived },
             ]}
-            value={state.status ?? ProductStatus.Draft}
-            onChange={(status) => setState({ ...state, status: status as ProductStatus })}
+            value={input.status ?? ProductStatus.Draft}
+            onChange={(status) => setInput({ ...input, status: status as ProductStatus })}
           />
         </FormLayout>
 
