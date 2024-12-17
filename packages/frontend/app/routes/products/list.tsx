@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client/index.js";
-import { ProductStatus, type PageInfo, type Product, type ProductConnection } from "@my-shopify/backend";
+import { ProductStatus } from '@my-shopify/backend'
+import type { PageInfo, Product, ProductConnection } from "@my-shopify/backend";
 import { Badge, Button, ButtonGroup, Card, InlineStack, Page, ResourceItem, ResourceList, Text, Thumbnail } from "@shopify/polaris";
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@shopify/polaris-icons";
 import Spinner from "~/components/Spinner";
@@ -71,7 +72,7 @@ export default function ListProducts() {
           <ResourceList<Product>
             resourceName={{ singular: 'product', plural: 'products' }}
             items={products}
-            renderItem={(product) => <Product product={product} />}
+            renderItem={renderProduct}
           />
           <InlineStack>
             <Button
@@ -106,7 +107,7 @@ export default function ListProducts() {
   )
 }
 
-const Product = ({ product }: { product: Product }) => (
+const renderProduct = (product: Product) => (
   <ResourceItem
     key={product.id}
     id={product.id}
@@ -129,7 +130,7 @@ const Product = ({ product }: { product: Product }) => (
   </ResourceItem>
 )
 
-const StatusBadge = ({ status }: { status: Product['status'] }) => {
+const StatusBadge = ({ status }: { status: ProductStatus }) => {
   switch (status) {
     case ProductStatus.Draft:
       return <Badge tone="info">Draft</Badge>

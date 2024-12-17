@@ -1,5 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client/index.js";
-import { ProductStatus, type Product, type ProductInput } from "@my-shopify/backend";
+import { ProductStatus } from '@my-shopify/backend'
+import type { Product, ProductInput } from "@my-shopify/backend";
 import { Button, ButtonGroup, Card, FormLayout, InlineStack, Page, Select, TextField } from "@shopify/polaris";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
