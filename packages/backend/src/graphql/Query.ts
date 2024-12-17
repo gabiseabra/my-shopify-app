@@ -6,12 +6,12 @@ const Query = {
   async product(args: {
     handle: string
   }): Promise<API.Product> {
-    const data = (await Shopify.query<{ product: Shopify.Product }>(gql`
-      query product($id: ID!) {
-        product(id: $id) { ...ProductFragment }
+    const data = (await Shopify.query<{ productByHandle: Shopify.Product }>(gql`
+      query product($handle: String!) {
+        productByHandle(handle: $handle) { ...ProductFragment }
       }
       ${Shopify.ProductFragment}
-    `, args)).product;
+    `, args)).productByHandle;
     return Shopify.mkProduct(data);
   },
 

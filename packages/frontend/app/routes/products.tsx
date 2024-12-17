@@ -75,7 +75,7 @@ export default function Products() {
               <ResourceItem
                 key={product.id}
                 id={product.id}
-                url={`/products/${product.handle}`}
+                url={`/products/${product.handle}/edit`}
                 media={
                   <Thumbnail
                     size="medium"

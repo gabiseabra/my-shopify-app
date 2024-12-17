@@ -10,7 +10,7 @@ const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
  * @param {object} variables The variables to pass to the query.
  */
 export async function query<T extends object>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
-  const response = await fetch(`${SHOPIFY_API_URL}/admin/api/2024-10/graphql.json`, {
+  const response = await fetch(`${SHOPIFY_API_URL}/admin/api/2024-07/graphql.json`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -104,7 +104,10 @@ export type Product = {
   handle: string
   defaultCursor: string
   featuredMedia: Media
-  variants: Connection<{ sku: string }>
+  variants: Connection<{
+    id: string
+    sku: string
+  }>
 }
 
 export const ProductFragment = gql`
@@ -119,6 +122,7 @@ export const ProductFragment = gql`
     variants(first: 1) {
       edges {
         node {
+          id
           sku
         }
       }
