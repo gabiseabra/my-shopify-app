@@ -16,7 +16,6 @@ const useInterceptLinks = () => {
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLAnchorElement
 
-      console.log(target.tagName, target.href)
       // Check if the clicked element is an <a> tag and it's an internal link
       if (
         target.tagName === 'A' &&
